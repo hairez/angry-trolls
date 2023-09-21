@@ -1,0 +1,7 @@
+{
+    "workbench.colorCustomizations": {
+
+    },
+    "python.autoComplete.extraPaths": ["./code/main.py"],
+    "python.analysis.extraPaths": ["./sources"]
+}
