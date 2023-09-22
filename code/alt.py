@@ -1,17 +1,55 @@
 import tkinter
+from tkinter import messagebox
+
+class trollButton:
+   def __init__(self,currX,currY):
+      self.button = tkinter.Button(window, text ="Put troll here!", command = self.disableButton)     
+      self.button.place(x=currX,y=currY) 
+
+   def disableButton(self):
+      #add picture of troll in the same spot
+      history.append(self.button)
+      self.button['state'] = tkinter.DISABLED
+
+      
+      undoButton['state'] = tkinter.NORMAL #enable the undo button
+   
+   def enableButton(self):
+      self.button['state'] = tkinter.NORMAL
+
+      if not history:
+         undoButton['state'] = tkinter.DISABLED #disable the undo button if there is nothing to undo
 
 
-top = tkinter.Tk()
-top.geometry("900x900")
-def helloCallBack():
-   msg=tkinter.messagebox.showinfo( "Hello Python", "Hello World")
-
-
-
+window = tkinter.Tk()
+window.geometry(f"{window.winfo_screenwidth()}x{window.winfo_screenheight()}")
+history=[]     #history over the users recent moves
 buttons=[]
+
+#creating 3x3 buttons
 for i in range(1,4):
    for j in range(1,4):
-      buttons.append(tkinter.Button(top, text ="Put troll here!", command = helloCallBack))
-      buttons[-1].place(x=150*i,y=50*j)
+      buttons.append(trollButton(150*i,50*j))
 
-top.mainloop()
+def undoLastMove():
+   return
+
+undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)   
+undoButton.place(x=50,y=window.winfo_height()-50) 
+undoButton['state'] = tkinter.DISABLED
+#winfo_width() 
+#winfo_screenwidth()
+
+
+
+
+#trying the enableButton function:
+while 0:
+   if input()=="NO":
+      buttons[-1].enableButton()
+   else:
+      print("okay")
+      print(history)
+
+
+window.mainloop()
