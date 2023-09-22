@@ -21,7 +21,7 @@ class trollButton:
          undoButton['state'] = tkinter.DISABLED #disable the undo button if there is nothing to undo
 
 
-window = tkinter.Tk()
+window = tkinter.Tk() #initialize window
 window.geometry(f"{window.winfo_screenwidth()}x{window.winfo_screenheight()}")
 history=[]     #history over the users recent moves
 buttons=[]
@@ -29,14 +29,14 @@ buttons=[]
 #creating 3x3 buttons TODO make it take in an input n
 for i in range(1,4):
    for j in range(1,4):
-      buttons.append(trollButton(150*i,50*j))
+      buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
 
 def undoLastMove():
    #TODO add this feature
    return
 
 undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)   
-undoButton.place(x=50,y=window.winfo_height()-50) 
+undoButton.place(x=50,y=window.winfo_screenheight()-200) 
 undoButton['state'] = tkinter.DISABLED
 #winfo_width() 
 #winfo_screenwidth()
