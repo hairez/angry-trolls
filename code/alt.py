@@ -7,7 +7,7 @@ class trollButton:
       self.button.place(x=currX,y=currY) 
 
    def disableButton(self):
-      #add picture of troll in the same spot
+      #TODO add picture of troll in the same spot
       history.append(self.button)
       self.button['state'] = tkinter.DISABLED
 
@@ -26,12 +26,13 @@ window.geometry(f"{window.winfo_screenwidth()}x{window.winfo_screenheight()}")
 history=[]     #history over the users recent moves
 buttons=[]
 
-#creating 3x3 buttons
+#creating 3x3 buttons TODO make it take in an input n
 for i in range(1,4):
    for j in range(1,4):
       buttons.append(trollButton(150*i,50*j))
 
 def undoLastMove():
+   #TODO add this feature
    return
 
 undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)   
