@@ -8,6 +8,9 @@ clock = pygame.time.Clock()
 running = True
 #Code taken from PyGame documentations
 
+#load picture onto the screen
+imp = pygame.image.load("./sprites/troll.png").convert()
+#screen.blit(imp, (0, 0)) #(image, position)
 
 while running:
 
@@ -17,11 +20,12 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
+    screen.blit(imp, (0, 0))
 
     # RENDER YOUR GAME HERE
 
 
-
+    
 
     # flip() the display to put your work on screen
     pygame.display.flip()
