@@ -9,7 +9,6 @@ from tkinter import messagebox
 #pip install screeninfo
 import screeninfo #library to get the width and height of user screen.
 
-print(screeninfo.get_monitors()[0].width)
 
 class trollButton:
    def __init__(self,currX,currY):
@@ -18,10 +17,8 @@ class trollButton:
 
    def disableButton(self):
       #TODO add picture of troll in the same spot
-      history.append(self.button)
+      history.append(self)
       self.button['state'] = tkinter.DISABLED
-
-      
       undoButton['state'] = tkinter.NORMAL #enable the undo button
    
    def enableButton(self):
@@ -44,7 +41,8 @@ for i in range(1,4):
       buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
 
 def undoLastMove():
-   #TODO add this feature
+   button = history.pop()
+   button.enableButton()
    return
 
 undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)   
