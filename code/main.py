@@ -59,7 +59,6 @@ while 0:
    if input()=="NO":
       buttons[-1].enableButton()
    else:
-      print("okay")
       print(history)
 
 
