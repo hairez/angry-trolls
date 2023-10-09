@@ -35,31 +35,67 @@ window.geometry(f"{windowWidth}x{windowHeight}")
 history=[]     #history over the users recent moves
 buttons=[]
 
-#creating 3x3 buttons TODO make it take in an input n
-for i in range(1,4):
-   for j in range(1,4):
-      buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
-
 def undoLastMove():
    button = history.pop()
    button.enableButton()
    return
 
 undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)   
-undoButton.place(x=50,y=windowHeight-200) 
-undoButton['state'] = tkinter.DISABLED
-#winfo_width() 
-#winfo_screenwidth()
+
+
+
+n=0
+def setSize(): #TODO have different funcitons. one for setSize, one for mainMenu and so on
+   #TODO move the inputBox creation and sizeSelectionBUtton in this function
+   global n
+   n = inputBox.get(1.0, "end-1c") 
+   #TODO felhantering av n
+
+
+   inputBox.place_forget()
+   sizeSelectionButton.place_forget()
+   mainGame(n)
+
+
+
+#Creating the textbox for input
+inputBox = tkinter.Text(window, height = 5, width = 5) 
+inputBox.place(x=windowWidth//2,y=windowHeight//2-50)
+
+#grid layout or pack (flow) layout?
+#inputBox.pack() 
+  
+#Input button
+sizeSelectionButton = tkinter.Button(window, text = "Set Board Size",command = setSize)
+sizeSelectionButton.place(x=windowWidth//2,y=windowHeight//2+40) 
+#sizeSelectionButton.pack() 
+
+def mainGame(n):
+
+   #creating 3x3 buttons 
+   #TODO make it take in an input n
+   for i in range(1,4):
+      for j in range(1,4):
+         buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
+         #TODO update the buttons positions if the window changes size
+
+
+
+   undoButton.place(x=50,y=windowHeight-200) 
+   undoButton['state'] = tkinter.DISABLED
 
 
 
 
-#trying the enableButton function:
-while 0:
-   if input()=="NO":
-      buttons[-1].enableButton()
-   else:
-      print(history)
+
+   #trying the enableButton function:
+   while 0:
+      if input()=="NO":
+         buttons[-1].enableButton()
+      else:
+         print(history)
 
 
 window.mainloop()
+
+
