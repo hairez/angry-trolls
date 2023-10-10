@@ -124,23 +124,18 @@ def startMenu():
 
 
 
-def setSize(): #TODO have different funcitons. one for setSize, one for mainMenu and so on
-   #TODO move the inputBox creation and sizeSelectionBUtton in this function
+def setSize(): 
    global n
-
-   while True:
-      try:
-         n = inputBox.get(1.0, "end-1c")
-         n=int(n)
-         if n>3:
-            break
-         else:
-            labelVar.set("That is not an integer larger than 3! Try again! \n Write an integer larger than 3: ") 
-      
-      except:
-         labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3: ")
-         
-   #TODO felhantering av n
+   try:
+      n = inputBox.get(1.0, "end-1c")
+      n=int(n)
+      if n<4:
+         labelVar.set("That is not an integer larger than 3! Try again! \n Write an integer larger than 3: ") 
+         return #exit the function and the loop until a new value has been entered
+   
+   except:
+      labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3: ")
+      return #exit the function and the loop until a new value has been entered
 
 
    textLabel.place_forget()
