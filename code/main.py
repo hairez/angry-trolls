@@ -5,18 +5,24 @@
 import tkinter
 from tkinter import messagebox
 
+from PIL import ImageTk, Image
+
 #Use this to install:
 #pip install screeninfo
 import screeninfo #library to get the width and height of user screen.
 import time
 
 class trollButton:
-   def __init__(self,currX,currY):
-      self.button = tkinter.Button(window, text ="Put troll here!", command = self.disableButton)     
+   def __init__(self, currX, currY):
+      self.button = tkinter.Button(window, text ="Put troll here!", command = self.disableButton)
       self.button.place(x=currX,y=currY) 
 
    def disableButton(self):
       #TODO add picture of troll in the same spot
+
+      #img = ImageTk.PhotoImage(Image.open("./code/sprites/troll.png"))
+      #self.button.configure(image=img)
+
       history.append(self)
       self.button['state'] = tkinter.DISABLED
       undoButton['state'] = tkinter.NORMAL #enable the undo button
@@ -60,10 +66,9 @@ def finishBoard():
    assert 1
 
 
-def startGame(n):
+def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
 
-   #creating 3x3 buttons 
-   #TODO make it take in an input n
+   #creating n x n buttons
    for i in range(1,n+1):
       for j in range(1,n+1):
          buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
@@ -83,54 +88,40 @@ def startGame(n):
          print(history)
 
 
-def startMenu():
-   global windowWidth, windowHeight, history, buttons
-   windowWidth=screeninfo.get_monitors()[0].width
-   windowHeight=screeninfo.get_monitors()[0].height
-   history=[]     #history over the users recent moves
-   buttons=[]
+def startMenu(windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
+   
 
-   global window
-   window = tkinter.Tk() #initialize window
-   window.geometry(f"{windowWidth}x{windowHeight}")
+   #Set label-text:
+   labelVar.set("Write an integer larger than 3 and less than 10: ")
 
-   global textLabel,labelVar
-   labelVar = tkinter.StringVar()
-   labelVar.set("Write an integer larger than 3: ")
-   textLabel = tkinter.Label(window, textvariable=labelVar, height = 5, width = 52)
+   #Set position of textLabel:
    textLabel.place(x=windowWidth//2-400,y=windowHeight//2-200)
 
 
 
-   #Creating the textbox for input
-   global inputBox
-   inputBox = tkinter.Text(window, height = 5, width = 5) 
+   #Set position for inputBox
    inputBox.place(x=windowWidth//2,y=windowHeight//2-50)
 
    #grid layout or pack (flow) layout?
    #inputBox.pack() 
 
-   #Input button
-   global sizeSelectionButton
-   sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = setSize)
+   #Set position for sizeSelectionButton
    sizeSelectionButton.place(x=windowWidth//2,y=windowHeight//2+40) 
    
    #sizeSelectionButton.pack() 
 
-   global undoButton
-   undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)
+   
 
    window.mainloop()
 
 
 
 def setSize(): 
-   global n
    try:
       n = inputBox.get(1.0, "end-1c")
       n=int(n)
-      if n<4:
-         labelVar.set("That is not an integer larger than 3! Try again! \n Write an integer larger than 3: ") 
+      if n<4 or n>9:
+         labelVar.set("That is not an integer larger than 3 and less than 10! Try again! \n Write an integer larger than 3 and less than 10: ") 
          return #exit the function and the loop until a new value has been entered
    
    except:
@@ -138,6 +129,7 @@ def setSize():
       return #exit the function and the loop until a new value has been entered
 
 
+   #remove all buttons from the main menu
    textLabel.place_forget()
    inputBox.place_forget()
    sizeSelectionButton.place_forget()
@@ -145,6 +137,21 @@ def setSize():
    startGame(n)
 
 
+
+window = tkinter.Tk() #initialize window
+windowWidth=screeninfo.get_monitors()[0].width
+windowHeight=screeninfo.get_monitors()[0].height
+window.geometry(f"{windowWidth}x{windowHeight}")
+
+#Initializing all other labels in the window
+labelVar = tkinter.StringVar()
+textLabel = tkinter.Label(window, textvariable=labelVar, height = 5, width = 52)
+inputBox = tkinter.Text(window, height = 5, width = 5) 
+sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = setSize)
+undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)
+
+history=[]     #history over the users recent moves
+buttons=[]
 startMenu()
 
 
