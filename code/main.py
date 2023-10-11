@@ -72,7 +72,7 @@ def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=sc
    #creating n x n buttons
    for i in range(1,n+1):
       #TODO add n frames, where each frame is stacked vertically ontop of each otehr, and add n buttons to each frame.
-      buttonFrames.append(tkinter.Frame(window))
+      buttonFrames.append(tkinter.Frame(rightFrame))
       buttonFrames[-1].pack(fill="both", expand=True, padx=20, pady=20)
 
       for j in range(1,n+1):
@@ -84,7 +84,7 @@ def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=sc
 
 
 
-   undoButton.place(x=50,y=windowHeight-200) 
+   undoButton.pack(side="bottom") 
    undoButton['state'] = tkinter.DISABLED
 
 
@@ -156,9 +156,18 @@ labelVar = tkinter.StringVar()
 textLabel = tkinter.Label(window, textvariable=labelVar, height = 5, width = 52)
 inputBox = tkinter.Text(window, height = 5, width = 5) 
 sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = setSize)
-undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)
+
 
 #TODO add a left frame (where i put the undo button and finish board button) and a right frame (containing all frames in buttonFrames)
+
+leftFrame=tkinter.Frame(window)
+leftFrame.pack(side="left")
+
+undoButton = tkinter.Button(leftFrame, text ="Undo last move", command = undoLastMove)
+
+
+rightFrame=tkinter.Frame(window)
+rightFrame.pack(side="right")
 
 buttonFrames=[]
 history=[]     #history over the users recent moves
