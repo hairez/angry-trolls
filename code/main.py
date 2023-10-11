@@ -13,9 +13,10 @@ import screeninfo #library to get the width and height of user screen.
 import time
 
 class trollButton:
-   def __init__(self, currX, currY):
-      self.button = tkinter.Button(window, text ="Put troll here!", command = self.disableButton)
-      self.button.place(x=currX,y=currY) 
+   def __init__(self, currX, currY,frame):
+      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.disableButton)
+      #self.button.place(x=currX,y=currY) 
+      self.button.pack(side="right")
 
    def disableButton(self):
       #TODO add picture of troll in the same spot
@@ -70,9 +71,16 @@ def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=sc
 
    #creating n x n buttons
    for i in range(1,n+1):
+      #TODO add n frames, where each frame is stacked vertically ontop of each otehr, and add n buttons to each frame.
+      buttonFrames.append(tkinter.Frame(window))
+      buttonFrames[-1].pack(fill="both", expand=True, padx=20, pady=20)
+
       for j in range(1,n+1):
-         buttons.append(trollButton(150*i,50*j)) #TODO put the buttons between 0 and screenheight-200
-         #TODO update the buttons positions if the window changes size
+         buttons.append(trollButton(150*i,50*j,buttonFrames[-1])) #TODO put the buttons between 0 and screenheight-200
+
+
+
+         #TODO update the buttons positions if the window changes sizea
 
 
 
@@ -150,6 +158,9 @@ inputBox = tkinter.Text(window, height = 5, width = 5)
 sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = setSize)
 undoButton = tkinter.Button(window, text ="Undo last move", command = undoLastMove)
 
+#TODO add a left frame (where i put the undo button and finish board button) and a right frame (containing all frames in buttonFrames)
+
+buttonFrames=[]
 history=[]     #history over the users recent moves
 buttons=[]
 startMenu()
