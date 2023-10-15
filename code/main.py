@@ -11,22 +11,73 @@ import screeninfo #library to get the width and height of user screen.
 import time
 
 class trollButton:
-   def __init__(self, frame, index):
-      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.disableButton)
+   def __init__(self, frame, x, y):
+      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.placeTroll)
       self.button.pack(side="right")
-      self.index = index
+      
+      #The position of the button on the grid. The upper left button is (0,0). The y-coord is the row number, and x-coord is column number.
+      self.x = x
+      self.y = y
 
-   def disableButton(self):
-      history.append(self)
-      self.button['state'] = tkinter.DISABLED
-      undoButton['state'] = tkinter.NORMAL #enable the undo button
+   def placeTroll(self):
+
+      if checkValidMove(self.x, self.y):
+         currGrid[self.y][self.x] = 1  #If a troll is placed on a position (x,y), then currGrid[y][x] will be 1, otherwise 0.
+         history.append(self)
+         self.button['state'] = tkinter.DISABLED
+         undoButton['state'] = tkinter.NORMAL #enable the undo button
+
+         #TODO if a move has been played, check if there are any valid moves left.
+
+      else:
+         #TODO if not valid move, end the game.
+         pass
    
    def enableButton(self):
       self.button['state'] = tkinter.NORMAL
+      currGrid[self.y][self.x] = 0
 
       if not history:
          undoButton['state'] = tkinter.DISABLED #disable the undo button if there is nothing to undo
 
+
+#Checks if a troll could be placed at position (x,y)
+def checkValidMove(x, y):
+   
+   n = len(currGrid)
+
+   for i in range(n):
+      if currGrid[y][i]:#Checks if there is a troll on the same row
+         return 0
+      if currGrid[i][x]:#Checks if there is a troll on the same column
+         return 0
+   
+
+   #Check if there is a troll on the \ diagonal
+   tempX, tempY = x-min(x,y), y-min(x,y)
+   while tempX<n and tempY<n:
+      if currGrid[tempY][tempX]:
+         return 0
+      tempX+=1
+      tempY+=1
+   
+
+   #Checks if there is a troll on the / diagonal and above (x,y)
+   i=1
+   while x+i<n and 0<=y-i:
+      if currGrid[y-i][x+i]:
+         return 0
+      i+=1
+   
+   #Checks if there is a troll on the / diagonal and under (x,y)
+   i=1
+   while 0<=x-i and y+i<n:
+      if currGrid[y+i][x-i]:
+         return 0
+      i+=1
+
+   #If no troll has been found, then it is a valid move
+   return 1      
 
 
 
@@ -45,36 +96,45 @@ def openFile():
 def updateFile():
    #TODO updaterar resultaten i filen efter att ha uppdaterat den med det nya resultatet. 
    #kan lösas med en array
-   assert 1
+   pass
 
 
 def calculateTime():
    #TODO räknar ut resultatet av spelet, hur lång tid det tar och sparar resultatet i en fil.
    #kallar på updateFile()
-   assert 1
+   pass
 
 def finishBoard():
    #TODO skapa en knapp i mainGame som kallar på denna funktion, som fyller i resterande troll där man kan.
    #kör en bruteforce recursive algo som backtrackar och testar alla troll
    #borde lösas i O(n^2)
-   assert 1
+   pass
+
+
+def gameLost():
+
+   pass
+
 
 
 def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
-   index=0
+   
    #Creating n x n buttons
-   for _ in range(1,n+1):
+   for y in range(n):
+      currGrid.append([0]*n)
       buttonFrames.append(tkinter.Frame(rightFrame))
       buttonFrames[-1].pack(fill="both", expand=True, padx=20, pady=20)
 
-      for _ in range(1,n+1):
-         #Each button gets an index from 0 to n**2-1
-         buttons.append(trollButton(buttonFrames[-1],index)) 
-         index+=1
+      for x in range(n):
+         buttons.append(trollButton(buttonFrames[-1], x, y)) 
 
 
-   undoButton.pack(side="bottom") 
+
+   undoButton.pack(side="bottom", padx=20, pady=20) 
    undoButton['state'] = tkinter.DISABLED
+
+   finishButton.pack(side="top", padx=20, pady=20)
+
 
 
 
@@ -145,7 +205,7 @@ leftFrame=tkinter.Frame(window)
 leftFrame.pack(side="left")
 
 undoButton = tkinter.Button(leftFrame, text ="Undo last move", command = undoLastMove)
-
+finishButton = tkinter.Button(leftFrame, text ="Finish the board for me", command = finishBoard)
 
 rightFrame=tkinter.Frame(window)
 rightFrame.pack(side="right")
@@ -153,6 +213,8 @@ rightFrame.pack(side="right")
 buttonFrames=[]
 history=[]     #history over the users recent moves
 buttons=[]
+
+currGrid=[]    #the current game grid
 startMenu()
 
 
