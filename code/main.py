@@ -12,7 +12,7 @@ import time
 
 class trollButton:
    def __init__(self, frame, x, y):
-      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.placeTroll, activebackground="blue")
+      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.placeTroll, activebackground="blue", bg = "gray")
       self.button.grid(row=y, column=x, padx=20, pady=10)
       
       #The position of the button on the grid. The upper left button is (0,0). The y-coord is the row number, and x-coord is column number.
@@ -32,7 +32,7 @@ class trollButton:
          pass
    
    def undoMove(self):
-      self.button.configure(bg = "white", text ="Put troll here!", command = self.placeTroll)
+      self.button.configure(bg = "gray", text ="Put troll here!", command = self.placeTroll)
       currGrid[self.y][self.x] = 0
       
       
