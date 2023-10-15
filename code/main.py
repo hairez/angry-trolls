@@ -5,8 +5,6 @@
 import tkinter
 from tkinter import messagebox
 
-from PIL import ImageTk, Image
-
 #Use this to install:
 #pip install screeninfo
 import screeninfo #library to get the width and height of user screen.
@@ -19,11 +17,6 @@ class trollButton:
       self.button.pack(side="right")
 
    def disableButton(self):
-      #TODO add picture of troll in the same spot
-
-      #img = ImageTk.PhotoImage(Image.open("./code/sprites/troll.png"))
-      #self.button.configure(image=img)
-
       history.append(self)
       self.button['state'] = tkinter.DISABLED
       undoButton['state'] = tkinter.NORMAL #enable the undo button
