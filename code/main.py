@@ -11,10 +11,10 @@ import screeninfo #library to get the width and height of user screen.
 import time
 
 class trollButton:
-   def __init__(self, currX, currY,frame):
+   def __init__(self, frame, index):
       self.button = tkinter.Button(frame, text ="Put troll here!", command = self.disableButton)
-      #self.button.place(x=currX,y=currY) 
       self.button.pack(side="right")
+      self.index = index
 
    def disableButton(self):
       history.append(self)
@@ -61,32 +61,21 @@ def finishBoard():
 
 
 def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
-
-   #creating n x n buttons
-   for i in range(1,n+1):
-      #TODO add n frames, where each frame is stacked vertically ontop of each otehr, and add n buttons to each frame.
+   index=0
+   #Creating n x n buttons
+   for _ in range(1,n+1):
       buttonFrames.append(tkinter.Frame(rightFrame))
       buttonFrames[-1].pack(fill="both", expand=True, padx=20, pady=20)
 
-      for j in range(1,n+1):
-         buttons.append(trollButton(150*i,50*j,buttonFrames[-1])) #TODO put the buttons between 0 and screenheight-200
-
-
-
-         #TODO update the buttons positions if the window changes sizea
-
+      for _ in range(1,n+1):
+         #Each button gets an index from 0 to n**2-1
+         buttons.append(trollButton(buttonFrames[-1],index)) 
+         index+=1
 
 
    undoButton.pack(side="bottom") 
    undoButton['state'] = tkinter.DISABLED
 
-
-   #trying the enableButton function:
-   while 0:
-      if input()=="NO":
-         buttons[-1].enableButton()
-      else:
-         print(history)
 
 
 def startMenu(windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
@@ -124,13 +113,12 @@ def setSize():
       if n<4 or n>9:
          labelVar.set("That is not an integer larger than 3 and less than 10! Try again! \n Write an integer larger than 3 and less than 10: ") 
          return #exit the function and the loop until a new value has been entered
-   
    except:
-      labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3: ")
+      labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3 and less than 10: ")
       return #exit the function and the loop until a new value has been entered
 
 
-   #remove all buttons from the main menu
+   #Remove all buttons from the main menu
    textLabel.place_forget()
    inputBox.place_forget()
    sizeSelectionButton.place_forget()
@@ -139,7 +127,7 @@ def setSize():
 
 
 
-window = tkinter.Tk() #initialize window
+window = tkinter.Tk() #Initialize window
 windowWidth=screeninfo.get_monitors()[0].width
 windowHeight=screeninfo.get_monitors()[0].height
 window.geometry(f"{windowWidth}x{windowHeight}")
