@@ -101,7 +101,13 @@ def finishBoard():
 
 
 def gameLost():
-   messagebox.showwarning(title="Angry Trolls", message="Game Lost")
+
+   #A message box displaying that the game is over.
+   messagebox.showwarning(title="Game Lost", message="Oh no! The trolls just got angry. Try again! ")
+
+   for button in buttons:
+      button.button["state"] = tkinter.DISABLED
+
    #TODO when closing the message box, restart the game.
    
 
