@@ -28,8 +28,8 @@ class trollButton:
          #TODO if a move has been played, check if there are any valid moves left.
 
       else:
-         #TODO if not valid move, end the game.
-         pass
+         gameLost()
+
    
    def undoMove(self):
       self.button.configure(bg = "gray", text ="Put troll here!", command = self.placeTroll)
@@ -101,8 +101,10 @@ def finishBoard():
 
 
 def gameLost():
+   messagebox.showwarning(title="Angry Trolls", message="Game Lost")
+   #TODO when closing the message box, restart the game.
+   
 
-   pass
 
 
 
