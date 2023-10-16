@@ -10,6 +10,8 @@ from tkinter import messagebox
 import screeninfo #library to get the width and height of user screen.
 import time
 
+#TODO add comments to everything
+
 class trollButton:
    def __init__(self, frame, x, y):
       self.button = tkinter.Button(frame, text ="Put troll here!", command = self.placeTroll, activebackground="blue", bg = "gray")
@@ -99,6 +101,22 @@ def finishBoard():
    #borde lösas i O(n^2)
    pass
 
+def restartGame():
+   for button in buttons:
+      button.button.grid_forget()
+
+   buttons.clear()
+   currGrid.clear()
+
+   finishButton.pack_forget()
+
+   restartButton.pack_forget()
+
+   leftFrame.pack_forget()
+   rightFrame.pack_forget()
+
+   startMenu()
+
 
 def gameLost():
 
@@ -108,11 +126,11 @@ def gameLost():
    for button in buttons:
       button.button["state"] = tkinter.DISABLED
 
-   #TODO when closing the message box, restart the game.
+   finishButton["state"] = tkinter.DISABLED
+
+   restartButton.pack(side="right")
+
    
-
-
-
 
 def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=screeninfo.get_monitors()[0].height):
    
@@ -121,8 +139,12 @@ def startGame(n, windowWidth=screeninfo.get_monitors()[0].width, windowHeight=sc
       currGrid.append([0]*n)
       for x in range(n):
          buttons.append(trollButton(rightFrame, x, y)) 
+   
+   leftFrame.pack(side="left")
+   rightFrame.pack(side="right")
 
    finishButton.pack(side="top", padx=20, pady=20)
+   finishButton["state"]=tkinter.NORMAL
 
 
 
@@ -189,12 +211,13 @@ sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Ga
 
 
 leftFrame=tkinter.Frame(window)
-leftFrame.pack(side="left")
 
-finishButton = tkinter.Button(leftFrame, text ="Finish the board for me", command = finishBoard)
+
+finishButton = tkinter.Button(leftFrame, text = "Finish the board for me", command = finishBoard)
+restartButton = tkinter.Button(leftFrame, text = "Restart Game", command = restartGame)
 
 rightFrame=tkinter.Frame(window)
-rightFrame.pack(side="right")
+
 
 buttons=[]
 
