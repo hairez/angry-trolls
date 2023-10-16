@@ -14,6 +14,8 @@ windowHeight=screeninfo.get_monitors()[0].height
 import time
 
 #TODO add comments to everything
+#TODO sort the functions nicely?
+
 
 class trollButton:
    def __init__(self, frame, x, y):
@@ -29,7 +31,18 @@ class trollButton:
          currGrid[self.y][self.x] = 1  #If a troll is placed on a position (x,y), then currGrid[y][x] will be 1, otherwise 0.
          self.button.configure(bg = "green", text = "Undo this move!", command = self.undoMove)
 
-         #TODO if a move has been played, check if there are any valid moves left.
+         #Check if there are any possible moves left:
+         n = len(currGrid)
+         moreMoves=0
+         for x in range(n):
+            for y in range(n):
+               if checkValidMove(x,y):
+                  moreMoves=1
+         
+         if moreMoves==0:
+            gameWon()
+         
+
       else:
          gameLost()
 
@@ -74,6 +87,8 @@ def checkValidMove(x, y):
    return 1      
 
 def openFile():
+   #import os
+   #open(os.path.expanduser("~/results/5.txt")
    #TODO öppnar filen där den sparar alla resultat. prob en CSV fil
    #sparar nuvarande top resultat i en array
    assert 1
@@ -81,6 +96,7 @@ def openFile():
 def updateFile():
    #TODO updaterar resultaten i filen efter att ha uppdaterat den med det nya resultatet. 
    #kan lösas med en array
+   #stäng sedan filen
    pass
 
 def calculateTime():
@@ -94,6 +110,27 @@ def finishBoard():
    #borde lösas i O(n^2)
    pass
 
+def gameWon():
+   #Calculate the resulting time to 2 decimal seconds. Units is seconds.
+   resultTime=round(time.time()-timer[-1],2)
+   
+   disableAllGameButtons()
+
+   #TODO openFile() and add result updateFile()
+
+   resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {len(currGrid)} trolls without any troll getting angry! "
+
+   tkinter.messagebox.showinfo(title="Game Won! ", message=resultMessage)
+
+   #Show restartButton
+   restartButton.pack(side="right")
+
+def disableAllGameButtons():
+   #Disable all other buttons
+   for button in buttons:
+      button.button["state"] = tkinter.DISABLED
+   finishButton["state"] = tkinter.DISABLED
+
 def restartGame():
    #Hide all buttons form main game
    for button in buttons:
@@ -106,6 +143,8 @@ def restartGame():
    #Clearing up currGrid and buttons so new game could be started
    buttons.clear()
    currGrid.clear()
+   #Clearing up timer, since the saved time stamp is useless if the game is restarting
+   timer.clear()
 
    #Starting the menu
    startMenu()
@@ -114,10 +153,7 @@ def gameLost():
    #A message box displaying that the game is over.
    messagebox.showwarning(title="Game Lost", message="Oh no! The trolls just got angry. Try again! ")
 
-   #Disable all other buttons
-   for button in buttons:
-      button.button["state"] = tkinter.DISABLED
-   finishButton["state"] = tkinter.DISABLED
+   disableAllGameButtons()
 
    #Show restartButton
    restartButton.pack(side="right")
@@ -140,8 +176,13 @@ def startGame(n):
    finishButton.pack(side="top", padx=20, pady=20)
    finishButton["state"]=tkinter.NORMAL
 
+   timer.append(time.time())
+
+
 def startMenu():
    #TODO add explanation of how the game works
+   #TODO Explain what the buttons does
+   #TODO Explain that finish the game means to give up
 
    #Set label-text:
    labelVar.set("Write an integer larger than 3 and less than 10: ")
@@ -175,6 +216,7 @@ def setSize():
    startGame(n)
 
 window = tkinter.Tk() #Initialize window
+window.title("Angry Trolls - The Game")
 window.geometry(f"{windowWidth}x{windowHeight}")
 
 #Initializing all other labels in the window
@@ -189,6 +231,7 @@ restartButton = tkinter.Button(leftFrame, text = "Restart Game", command = resta
 
 buttons=[]     #An array keeping all relevant trollButtons
 currGrid=[]    #A grid tracking the current state of the game
+timer=[]       #An array keeping track of time stamps
 
 startMenu()
 window.mainloop()
