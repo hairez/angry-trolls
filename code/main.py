@@ -133,13 +133,27 @@ def calculateTime():
    return round(time.time()-timer[-1],2)
 
 def finishBoard():
+   n=len(currGrid)
+   notValid=[[0]*n for _ in range(n)]
+
+   for x in range(n):
+      for y in range(n):
+         pass
+   
+   #TODO place out all possible trolls
+   #TODO update all button-texts so it's blank
+   #TODO make all buttons that the player placed green, and the autofilled red
+
+   #TODO Disable all buttons, and show restart button
+
+
    #TODO skapa en knapp i mainGame som kallar på denna funktion, som fyller i resterande troll där man kan.
    #kör en bruteforce recursive algo som backtrackar och testar alla troll
    #borde lösas i O(n^2)
    pass
 
 def gameWon():
-   #Calculate the resulting time to 2 decimal seconds. Units is seconds.
+   #Calculate the result rounded to 2 decimal seconds.
    resultTime = calculateTime()
 
    n=len(currGrid)
