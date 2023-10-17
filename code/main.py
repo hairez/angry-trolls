@@ -86,23 +86,51 @@ def checkValidMove(x, y):
    #If no troll has been found, then it is a valid move
    return 1      
 
-def openFile():
-   #import os
-   #open(os.path.expanduser("~/results/5.txt")
-   #TODO öppnar filen där den sparar alla resultat. prob en CSV fil
-   #sparar nuvarande top resultat i en array
-   assert 1
+#Count number of trolls that are placed out
+def countTrolls():
+   n=len(currGrid)
+   trolls=0
+   for x in range(n):
+      for y in range(n):
+         if currGrid[x][y]:
+            trolls+=1
+   return trolls
 
-def updateFile():
-   #TODO updaterar resultaten i filen efter att ha uppdaterat den med det nya resultatet. 
-   #kan lösas med en array
-   #stäng sedan filen
-   pass
+def openFile(gridSize):
+   #Finds the directory of where the code is running, and opens the result-file for the current grid size
+   file = open(__file__[:-7]+f"results/{gridSize}.txt", "r", encoding="utf-8")
 
+   fileRows=file.readlines()
+
+   file.close()
+
+   gameResults=[]
+   for row in fileRows:
+      gameResults.append([*map(eval,row.split(","))])
+
+   return gameResults,file
+   
+def updateFile(allResults, gridSize):
+   file = open(__file__[:-7]+f"results/{gridSize}.txt", "w", encoding="utf-8")
+   for trolls,trollTime in allResults:
+      file.write(f"{trolls},{trollTime}\n")
+   file.close()
+
+def checkResult(newTime, trolls, gridSize):
+   allResults,file=openFile(gridSize)
+
+   #We want to sort by most number of trolls, and then lowest time.
+   allResults.append([-trolls,newTime])
+   allResults.sort()
+
+   #Update the relevant file, and only save the top 10 scores
+   updateFile(allResults[:10], gridSize)
+
+   return allResults.index([-trolls,newTime])+1
+
+#Calculate the time from start to finish
 def calculateTime():
-   #TODO räknar ut resultatet av spelet, hur lång tid det tar och sparar resultatet i en fil.
-   #kallar på updateFile()
-   pass
+   return round(time.time()-timer[-1],2)
 
 def finishBoard():
    #TODO skapa en knapp i mainGame som kallar på denna funktion, som fyller i resterande troll där man kan.
@@ -112,13 +140,17 @@ def finishBoard():
 
 def gameWon():
    #Calculate the resulting time to 2 decimal seconds. Units is seconds.
-   resultTime=round(time.time()-timer[-1],2)
+   resultTime = calculateTime()
+
+   n=len(currGrid)
+
+   trolls=countTrolls()
    
+   currentPlacing = checkResult(resultTime, trolls, n)
+
    disableAllGameButtons()
 
-   #TODO openFile() and add result updateFile()
-
-   resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {len(currGrid)} trolls without any troll getting angry! "
+   resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {trolls} trolls without any troll getting angry! \nYou are placed #{currentPlacing} on a {n}x{n}-grid."
 
    tkinter.messagebox.showinfo(title="Game Won! ", message=resultMessage)
 
