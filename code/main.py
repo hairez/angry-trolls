@@ -189,7 +189,6 @@ def finishBoard():
          if cell:
             continue
          score,tempState = solve(fillGrid(x,row,occupied), filledInCell(x,row,currState), row+1)
-         print(score,tempState)
          if score>bestScore:
             bestScore=score
             bestState=[row[:] for row in tempState]
@@ -302,9 +301,11 @@ def startGame(n):
 
 
 def startMenu():
-   #TODO add explanation of how the game works
-   #TODO Explain what the buttons does
-   #TODO Explain that finish the game means to give up
+   rules = "Welcome to Angry Trolls! Here are the rules: \n 1. Select a size of the board. \n 2. Click on a button to place a troll there, and it will turn green. \n 3. Fill in as many trolls as you can, until you can't fill in any more trolls. \n \
+4. You can click on a green button to undo that move.\n 5. Try to place as many trolls as possible, and as fast as possible.\n \
+         \n Note that no 2 trolls can share the same row, column, or diagonal. If you put a troll where it is not allowed, the game ends immediately.\n \
+         \n You can always click on \"Finish the board for me!\" to autofill the rest of the cells as good as possible. The autofilled trolls will turn red. However, clicking on this button will also make the current game end immediately, and the result will not be saved. \n Good luck!"
+   tkinter.messagebox.showinfo(title="Game Rules", message=rules)
 
    #Set label-text:
    labelVar.set("Write an integer larger than 3 and less than 10: ")
