@@ -212,30 +212,21 @@ def finishBoard():
    tempNotValid=[row[:] for row in notValid]
    tempState=[row[:] for row in currGrid]    
    score, bestState = solve(tempNotValid, tempState)
-   
-   
 
-   for x in notValid:
-      print(x)
-   print()
-   for x in currGrid:
-      print(x)
-
-   print(score)
-
-   for x in bestState:
-      print(x)
-
-   #TODO update all button-texts so it's blank
-   #TODO make all buttons that the player placed green, and the autofilled red
-
-   #TODO Disable all buttons, and show restart button
+   for button in buttons:
+      button.button.configure(text=" "*22)
 
 
-   #TODO skapa en knapp i mainGame som kallar på denna funktion, som fyller i resterande troll där man kan.
-   #kör en bruteforce recursive algo som backtrackar och testar alla troll
-   #borde lösas i O(n^2)
-   pass
+   #Turn all the trolls in bestState that are not in currGrid to red. 
+   for x in range(n):
+      for y in range(n):
+         if bestState[y][x] and not currGrid[y][x]:
+            buttons[y*n+x].button.configure(bg = "red")
+
+   disableAllGameButtons()
+
+   restartButton.pack(side="right")
+
 
 def gameWon():
    #Calculate the result rounded to 2 decimal seconds.
