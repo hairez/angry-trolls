@@ -134,13 +134,98 @@ def calculateTime():
 
 def finishBoard():
    n=len(currGrid)
-   notValid=[[0]*n for _ in range(n)]
-
-   for x in range(n):
-      for y in range(n):
-         pass
    
-   #TODO place out all possible trolls
+   def fillGrid(x, y, notValidGrid):
+      occupied = [row[:] for row in notValidGrid]
+      #Occupied is a grid keeping track of all occupied cells.
+
+      for i in range(n):
+         occupied[y][i]=1  #Fill in all cells on the same row
+         occupied[i][x]=1  #Fill in all cells on the same column
+
+      #Fill in cells on the same diagonal \
+      tempX, tempY = x-min(x,y), y-min(x,y)
+      while tempX<n and tempY<n:
+         occupied[tempY][tempX]=1
+         tempX+=1
+         tempY+=1
+      
+      #Checks if there is a troll on the / diagonal and above (x,y)
+      i=1
+      while x+i<n and 0<=y-i:
+         occupied[y-i][x+i]=1
+         i+=1
+      
+      #Checks if there is a troll on the / diagonal and under (x,y)
+      i=1
+      while 0<=x-i and y+i<n:
+         occupied[y+i][x-i]=1
+         i+=1
+      
+      return occupied
+      
+
+   def generateValidSquares(trollGrid):
+      #Given a position with troll, return a grid with all invalid squares
+      occupied=[[0]*n for _ in range(n)]
+      for x in range(n):
+         for y in range(n):
+            if trollGrid[y][x]:
+               occupied = fillGrid(x,y,occupied)
+      return occupied
+   
+   def solve(occupied, currState, row=0):
+      #Try placing a troll on every avaiable cell on every row
+
+      if row==n:
+         return sum(sum(row) for row in currState), currState  #Return number of trolls and the placement
+      
+      if sum(occupied[row]) == n:  #If there is no free spots on this row
+         return solve(occupied, currState, row+1)
+      
+      bestScore=0
+      bestState=currState
+      for x,cell in enumerate(occupied[row]):
+         if cell:
+            continue
+         score,tempState = solve(fillGrid(x,row,occupied), filledInCell(x,row,currState), row+1)
+         print(score,tempState)
+         if score>bestScore:
+            bestScore=score
+            bestState=[row[:] for row in tempState]
+         
+         if score==n: #It can never reach more than n points.
+            break
+      
+      return bestScore,bestState
+      
+
+   def filledInCell(x,y,grid):
+      tempGrid = [row[:] for row in grid]
+      tempGrid[y][x]=1
+      return tempGrid
+
+
+
+   notValid=generateValidSquares(currGrid)
+   #Remove references to currgrid to not accidentally put any trolls in the original grid
+   tempNotValid=[row[:] for row in notValid]
+   tempState=[row[:] for row in currGrid]    
+   score, bestState = solve(tempNotValid, tempState)
+   
+   
+
+   for x in notValid:
+      print(x)
+   print()
+   for x in currGrid:
+      print(x)
+
+   print(score)
+
+   for x in bestState:
+      print(x)
+
    #TODO update all button-texts so it's blank
    #TODO make all buttons that the player placed green, and the autofilled red
 
