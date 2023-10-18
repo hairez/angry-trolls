@@ -14,7 +14,6 @@ windowHeight=screeninfo.get_monitors()[0].height
 import time
 
 #TODO add comments to everything
-#TODO sort the functions nicely?
 
 
 class TrollButton:
@@ -47,7 +46,6 @@ class TrollButton:
          #If the move is not valid, then player loses
          gameLost()
 
-   
    def undoMove(self):
       self.button.configure(bg = "gray", text ="Put troll here!", command = self.placeTroll)
       currGrid[self.y][self.x] = 0  #Sets the corresponding cell to 0, indicating that there is no troll on that cell
@@ -231,6 +229,15 @@ def gameWon():
    #Show restartButton
    restartButton.pack(side="right")
 
+def gameLost():
+   #A message box displaying that the game is over.
+   messagebox.showwarning(title="Game Lost", message="Oh no! The trolls just got angry. Try again! ")
+
+   disableAllGameButtons()
+
+   #Show restartButton
+   restartButton.pack(side="right")
+
 def disableAllGameButtons():     #Disable all TrollButtons and the finish button
    for button in buttons:
       button.button["state"] = tkinter.DISABLED
@@ -254,15 +261,6 @@ def restartGame():
    #Starting the menu
    startMenu()
 
-def gameLost():
-   #A message box displaying that the game is over.
-   messagebox.showwarning(title="Game Lost", message="Oh no! The trolls just got angry. Try again! ")
-
-   disableAllGameButtons()
-
-   #Show restartButton
-   restartButton.pack(side="right")
-
 def startGame(n):
    #Creating n x n buttons
    for y in range(n):
@@ -283,6 +281,23 @@ def startGame(n):
 
    timer.append(time.time())  #Start a new time
 
+def setSize(): 
+   try:  #Felhantering
+      n = inputBox.get(1.0, "end-1c")
+      n = int(n)
+      if n<4 or n>9: #Guarantees that the gridsize is between 4 and 9, inclusive
+         labelVar.set("That is not an integer larger than 3 and less than 10! Try again! \n Write an integer larger than 3 and less than 10: ") 
+         return #exit the function and the loop until a new value has been entered
+   except:
+      labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3 and less than 10: ")
+      return #exit the function and the loop until a new value has been entered
+   
+   #When the size of the grid is set,
+   #remove all buttons from the main menu
+   textLabel.place_forget()
+   inputBox.place_forget()
+   sizeSelectionButton.place_forget()
+   startGame(n)
 
 def startMenu():
    rules = "Welcome to Angry Trolls! Here are the rules: \n 1. Select a size of the board. \n 2. Click on a button to place a troll there, and it will turn green. \n 3. Fill in as many trolls as you can, until you can't fill in any more trolls. \n \
@@ -302,24 +317,6 @@ def startMenu():
 
    #Set position for sizeSelectionButton
    sizeSelectionButton.place(x=windowWidth//2,y=windowHeight//2+40) 
-
-def setSize(): 
-   try:  #Felhantering
-      n = inputBox.get(1.0, "end-1c")
-      n = int(n)
-      if n<4 or n>9: #Guarantees that the gridsize is between 4 and 9, inclusive
-         labelVar.set("That is not an integer larger than 3 and less than 10! Try again! \n Write an integer larger than 3 and less than 10: ") 
-         return #exit the function and the loop until a new value has been entered
-   except:
-      labelVar.set("That is not an integer. Try again! \n Write an integer larger than 3 and less than 10: ")
-      return #exit the function and the loop until a new value has been entered
-   
-   #When the size of the grid is set,
-   #remove all buttons from the main menu
-   textLabel.place_forget()
-   inputBox.place_forget()
-   sizeSelectionButton.place_forget()
-   startGame(n)
 
 window = tkinter.Tk() #Initialize window
 window.title("Angry Trolls - The Game")
