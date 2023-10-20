@@ -13,8 +13,6 @@ windowHeight=screeninfo.get_monitors()[0].height
 
 import time
 
-#TODO add comments to everything
-
 
 class TrollButton:
    def __init__(self, frame, x, y):
@@ -99,7 +97,7 @@ def openFile(gridSize):
    gameResults=[]       #Each element in this array will contain a past result for the current grid size
    for row in fileRows:
       gameResults.append([*map(eval,row.split(","))])    #The information for each game is stored seperated with commas on a row
-   return gameResults,file
+   return gameResults
    
 def updateFile(allResults, gridSize):
    file = open(__file__[:-7]+f"results/{gridSize}.txt", "w", encoding="utf-8")
@@ -108,7 +106,7 @@ def updateFile(allResults, gridSize):
    file.close()
 
 def checkResult(newTime, trolls, gridSize):
-   allResults,file=openFile(gridSize)
+   allResults=openFile(gridSize)
 
    #We want to sort by most number of trolls, and then lowest time.
    allResults.append([-trolls,newTime])   #.sort() will sort the array with the smallest element first. By having a negative number of trolls, the more trolls, the lower index in the array it will have.
@@ -217,11 +215,11 @@ def gameWon():
    trolls=countTrolls(currGrid)
    
    n=len(currGrid)
-   currentPlacing = checkResult(resultTime, trolls, n)   #Update the results, and check the current placing
+   currentPlacing = checkResult(resultTime, trolls, n)   #Update the results, and check the current placing on the leaderboard
 
    disableAllGameButtons()
 
-   resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {trolls} trolls without any troll getting angry! \nYou are placed #{currentPlacing} on a {n}x{n}-grid."
+   resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {trolls} trolls without any troll getting angry! \nYou are placed #{currentPlacing} on the leaderboard for a {n}x{n}-grid."
    if currentPlacing==11:  #If the result is placed number 11, then the result is not saved.
       resultMessage+="\n Sadly since you didn't place top 10, your result will not be saved. Better luck next time!"
    tkinter.messagebox.showinfo(title="Game Won! ", message=resultMessage)
