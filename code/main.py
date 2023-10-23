@@ -336,3 +336,4 @@ timer=[]       #An array keeping track of time stamps
 
 startMenu()
 window.mainloop()
+
