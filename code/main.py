@@ -8,6 +8,8 @@ from tkinter import messagebox
 #Use this to install:
 #pip install screeninfo
 import screeninfo #library to get the width and height of user screen.
+
+#First examinor said these lines are okay to be up here, since these are constants:
 windowWidth=screeninfo.get_monitors()[0].width
 windowHeight=screeninfo.get_monitors()[0].height
 
@@ -15,41 +17,41 @@ import time
 
 
 class TrollButton:
-   def __init__(self, frame, x, y):
-      self.button = tkinter.Button(frame, text ="Put troll here!", command = self.placeTroll, activebackground="blue", bg = "gray")
+   def __init__(self, frame, x, y, currGrid, buttons, finishButton, restartButton, timer):
+      self.button = tkinter.Button(frame, text ="Put troll here!", command = lambda: self.placeTroll(currGrid, buttons, finishButton, restartButton, timer), activebackground="blue", bg = "gray")
       self.button.grid(row=y, column=x, padx=20, pady=10)
       
       #The position of the button on the grid. The upper left button is (0,0). The y-coord is the row number, and x-coord is column number.
       self.x = x
       self.y = y
 
-   def placeTroll(self):
-      if checkValidMove(self.x, self.y):
+   def placeTroll(self, currGrid, buttons, finishButton, restartButton, timer):
+      if checkValidMove(self.x, self.y, currGrid):
          currGrid[self.y][self.x] = 1  #If a troll is placed on a position (x,y), then currGrid[y][x] will be 1, otherwise 0.
-         self.button.configure(bg = "green", text = "Undo this move!", command = self.undoMove)
+         self.button.configure(bg = "green", text = "Undo this move!", command = lambda: self.undoMove(currGrid, buttons, finishButton, restartButton, timer))
 
          #Check if there are any possible moves left:
          n = len(currGrid)    #The size of the grid is always the number of rows in the grid
          moreMoves=0
          for x in range(n):
             for y in range(n):
-               if checkValidMove(x,y):    #True if checkValidMove(x,y)==1, and False if checkValidMove(x,y)==0
+               if checkValidMove(x,y, currGrid):    #True if checkValidMove(x,y)==1, and False if checkValidMove(x,y)==0
                   moreMoves=1
          
          #If there are no more moves, then the game ends, and the player has won
          if moreMoves==0:
-            gameWon()
+            gameWon(currGrid,buttons,finishButton,restartButton, timer)
          
       else:
          #If the move is not valid, then player loses
-         gameLost()
+         gameLost(buttons, finishButton, restartButton)
 
-   def undoMove(self):
-      self.button.configure(bg = "gray", text ="Put troll here!", command = self.placeTroll)
+   def undoMove(self, currGrid, buttons, finishButton, restartButton, timer):
+      self.button.configure(bg = "gray", text ="Put troll here!", command = lambda: self.placeTroll(currGrid, buttons, finishButton, restartButton,timer))
       currGrid[self.y][self.x] = 0  #Sets the corresponding cell to 0, indicating that there is no troll on that cell
 
 #Checks if a troll could be placed at position (x, y). Returns 1 if it is a valid move, otherwise 0.
-def checkValidMove(x, y):
+def checkValidMove(x, y, currGrid):
    n = len(currGrid)    #The size of the grid is always the number of rows in the grid
 
    for i in range(n):
@@ -118,10 +120,10 @@ def checkResult(newTime, trolls, gridSize):
    return allResults.index([-trolls,newTime])+1    #The index is off by 1 compared to the placing.
 
 #Calculate the time from start to finish
-def calculateTime():
+def calculateTime(timer):
    return round(time.time()-timer[-1],2)  #Calculate the result rounded to 2 decimal seconds.
 
-def finishBoard():
+def finishBoard(currGrid, buttons, finishButton, restartButton):
    n = len(currGrid)    #The size of the grid is always the number of rows in the grid
    
    def fillGrid(x, y, notValidGrid):      #Fill in the grid notValidGrid everywhere where you cannot put a troll if there is a troll on (x, y)
@@ -207,17 +209,17 @@ def finishBoard():
          if bestState[y][x] and not currGrid[y][x]:
             buttons[y*n+x].button.configure(bg = "red")  #y is the row number, and x is the column number. The index of the button will be y*n+x because there are n elements on each row
 
-   disableAllGameButtons()
+   disableAllGameButtons(buttons, finishButton)
    restartButton.pack(side="right")
 
-def gameWon():
-   resultTime = calculateTime()
+def gameWon(currGrid,buttons,finishButton,restartButton, timer):
+   resultTime = calculateTime(timer)
    trolls=countTrolls(currGrid)
    
    n=len(currGrid)
    currentPlacing = checkResult(resultTime, trolls, n)   #Update the results, and check the current placing on the leaderboard
 
-   disableAllGameButtons()
+   disableAllGameButtons(buttons, finishButton)
 
    resultMessage=f"Well done! You took {resultTime} seconds! \nYou put down {trolls} trolls without any troll getting angry! \nYou are placed #{currentPlacing} on the leaderboard for a {n}x{n}-grid."
    if currentPlacing==11:  #If the result is placed number 11, then the result is not saved.
@@ -227,21 +229,21 @@ def gameWon():
    #Show restartButton
    restartButton.pack(side="right")
 
-def gameLost():
+def gameLost(buttons, finishButton, restartButton):
    #A message box displaying that the game is over.
    messagebox.showwarning(title="Game Lost", message="Oh no! The trolls just got angry. Try again! ")
 
-   disableAllGameButtons()
+   disableAllGameButtons(buttons, finishButton)
 
    #Show restartButton
    restartButton.pack(side="right")
 
-def disableAllGameButtons():     #Disable all TrollButtons and the finish button
+def disableAllGameButtons(buttons, finishButton):     #Disable all TrollButtons and the finish button
    for button in buttons:
       button.button["state"] = tkinter.DISABLED
    finishButton["state"] = tkinter.DISABLED
 
-def restartGame():
+def restartGame(buttons, finishButton, restartButton, leftFrame, rightFrame, currGrid, timer, labelVar, textLabel, inputBox, sizeSelectionButton):
    #Hide all buttons form main game
    for button in buttons:
       button.button.grid_forget()
@@ -257,13 +259,13 @@ def restartGame():
    timer.clear()
 
    #Starting the menu
-   startMenu()
+   startMenu(labelVar, textLabel, inputBox, sizeSelectionButton)
 
-def startGame(n):
+def startGame(n, buttons, rightFrame, currGrid, leftFrame, finishButton, timer, restartButton):
    #Creating n x n buttons
    for y in range(n):
       for x in range(n):
-         buttons.append(TrollButton(rightFrame, x, y)) 
+         buttons.append(TrollButton(rightFrame, x, y, currGrid, buttons, finishButton, restartButton, timer)) 
    
    #Creating a grid where all current trolls could be tracked on.
    for _ in range(n):
@@ -279,7 +281,7 @@ def startGame(n):
 
    timer.append(time.time())  #Start a new time
 
-def setSize(): 
+def setSize(inputBox, labelVar, textLabel, sizeSelectionButton, buttons, rightFrame, currGrid, leftFrame, finishButton, timer, restartButton): 
    try:  #Felhantering
       n = inputBox.get(1.0, "end-1c")
       n = int(n)
@@ -295,9 +297,9 @@ def setSize():
    textLabel.place_forget()
    inputBox.place_forget()
    sizeSelectionButton.place_forget()
-   startGame(n)
+   startGame(n, buttons, rightFrame, currGrid, leftFrame, finishButton, timer, restartButton)
 
-def startMenu():
+def startMenu(labelVar, textLabel, inputBox, sizeSelectionButton):
    rules = "Welcome to Angry Trolls! Here are the rules: \n 1. Select a size of the board. \n 2. Click on a button to place a troll there, and it will turn green. \n 3. Fill in as many trolls as you can, until you can't fill in any more trolls. \n \
 4. You can click on a green button to undo that move.\n 5. Try to place as many trolls as possible, and as fast as possible.\n \
          \n Note that no 2 trolls can share the same row, column, or diagonal. If you put a troll where it is not allowed, the game ends immediately.\n \
@@ -316,24 +318,26 @@ def startMenu():
    #Set position for sizeSelectionButton
    sizeSelectionButton.place(x=windowWidth//2,y=windowHeight//2+40) 
 
-window = tkinter.Tk() #Initialize window
-window.title("Angry Trolls - The Game")
-window.geometry(f"{windowWidth}x{windowHeight}")
+def main():
+   window = tkinter.Tk() #Initialize window
+   window.title("Angry Trolls - The Game")
+   window.geometry(f"{windowWidth}x{windowHeight}")
 
-#Initializing all other labels in the window
-labelVar = tkinter.StringVar()
-textLabel = tkinter.Label(window, textvariable=labelVar, height = 5, width = 52)
-inputBox = tkinter.Text(window, height = 5, width = 5) 
-sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = setSize)
-rightFrame=tkinter.Frame(window)
-leftFrame=tkinter.Frame(window)
-finishButton = tkinter.Button(leftFrame, text = "Finish the board for me", command = finishBoard)
-restartButton = tkinter.Button(leftFrame, text = "Restart Game", command = restartGame)
+   #Initializing all other labels in the window
+   labelVar = tkinter.StringVar()
+   textLabel = tkinter.Label(window, textvariable=labelVar, height = 5, width = 52)
+   inputBox = tkinter.Text(window, height = 5, width = 5) 
+   sizeSelectionButton = tkinter.Button(window, text = "Set Board Size and Start Game",command = lambda: setSize(inputBox, labelVar, textLabel, sizeSelectionButton, buttons, rightFrame, currGrid, leftFrame, finishButton, timer, restartButton))
+   rightFrame=tkinter.Frame(window)
+   leftFrame=tkinter.Frame(window)
+   finishButton = tkinter.Button(leftFrame, text = "Finish the board for me", command = lambda: finishBoard(currGrid, buttons, finishButton, restartButton))
+   restartButton = tkinter.Button(leftFrame, text = "Restart Game", command = lambda: restartGame(buttons, finishButton, restartButton, leftFrame, rightFrame, currGrid, timer, labelVar, textLabel, inputBox, sizeSelectionButton))
 
-buttons=[]     #An array keeping all relevant TrollButtons
-currGrid=[]    #A grid tracking the current state of the game
-timer=[]       #An array keeping track of time stamps
+   buttons=[]     #An array keeping all relevant TrollButtons
+   currGrid=[]    #A grid tracking the current state of the game
+   timer=[]       #An array keeping track of time stamps
+   startMenu(labelVar, textLabel, inputBox, sizeSelectionButton)
+   window.mainloop()
 
-startMenu()
-window.mainloop()
+main()
 
